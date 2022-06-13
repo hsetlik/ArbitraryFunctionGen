@@ -28,11 +28,10 @@ private:
 public:
     InputInterface(/* args */);
     ~InputInterface();
-    // poll the encoders and run appropriate callback
+    // poll the encoders and run appropriate callback. Call this in the main loop
     void tick();
     // assign the callback funciton
     void setCallback(EncoderCallback c) { encCallback = c; }
 };
-
 
 #endif // !INPUTINTERFACE_H
