@@ -1,9 +1,9 @@
 #include "InputInterface.h"
 
 InputInterface::InputInterface(/* args */) :
-encoderA(ADATA, ACLK, RotaryEncoder::LatchMode::FOUR0),
-encoderB(BDATA, BCLK, RotaryEncoder::LatchMode::FOUR0),
-encoderC(CDATA, CCLK, RotaryEncoder::LatchMode::FOUR0),
+encoderA(ADATA, ACLK, RotaryEncoder::LatchMode::TWO03),
+encoderB(BDATA, BCLK, RotaryEncoder::LatchMode::TWO03),
+encoderC(CDATA, CCLK, RotaryEncoder::LatchMode::TWO03),
 encCallback(nullptr)
 {
 
@@ -32,7 +32,7 @@ void InputInterface::tick()
     auto bNew = encoderB.getPosition();
     if (bNew != posB)
     {
-        encCallback(0, bNew < posB);
+        encCallback(1, bNew < posB);
         posB = bNew;
     }
 
@@ -40,7 +40,7 @@ void InputInterface::tick()
     auto cNew = encoderC.getPosition();
     if (cNew != posC)
     {
-        encCallback(0, cNew < posC);
+        encCallback(2, cNew < posC);
         posC = cNew;
     }
 }

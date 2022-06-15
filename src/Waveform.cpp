@@ -2,12 +2,31 @@
 
 Waveform::Waveform()
 {
-    calculateTable();
 }
 
 Waveform::~Waveform() {}
+
+
+uint16_t Waveform::tick()
+{
+    static uint16_t tableSample = 0;
+    static uint32_t outputSample = 0;
+    static uint32_t lastAdvanceSample = 0;
+    outputSample = (outputSample + 1) % SAMPLE_RATE_HZ;
+    static bool needsAdvance = false;
+    if (outputSample > lastAdvanceSample)
+        needsAdvance = (outputSample - lastAdvanceSample) > (SAMPLE_RATE_HZ / frequencyHz);
+    else
+        needsAdvance = ((outputSample + SAMPLE_RATE_HZ) - lastAdvanceSample) > (SAMPLE_RATE_HZ / frequencyHz);
+    if (needsAdvance)
+    {
+        lastAdvanceSample = outputSample;
+        tableSample = (tableSample + 1) % TABLE_SAMPLES;
+    }
+    return table[tableSample];
+}
 //====================================================
-void Sine::calculateTable()
+Sine::Sine()
 {
     for (uint16_t s = 0; s < TABLE_SAMPLES; ++s)
     {
@@ -17,7 +36,7 @@ void Sine::calculateTable()
     }
 }
 //====================================================
-void Triangle::calculateTable()
+Triangle::Triangle()
 {
     uint16_t level = 0;
     uint16_t increment = 2 * (4095 / TABLE_SAMPLES);
@@ -31,3 +50,16 @@ void Triangle::calculateTable()
     }
 }
 //====================================================
+
+Waveform* CreateWaveform::createWaveShape (WaveShape shape)
+{
+    switch (shape)
+    {
+        case eSine:
+            return new Sine();
+        case eTriangle:
+            return new Triangle();
+        default:
+            return new Sine();
+    }
+}

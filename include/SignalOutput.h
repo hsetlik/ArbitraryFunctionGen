@@ -1,22 +1,23 @@
 #ifndef SIGNALOUTPUT_H
 #define SIGNALOUTPUT_H
-#define BUFFER_SIZE 512
-// this translates to a ~23 microsecond period for each sample
-#define SAMPLE_RATE_HZ 44100
+// this translates to a ~23 microsecond period for each tableSample
 #include "Readout.h"
+#include "Waveform.h"
+#include <memory>
 
-typedef uint16_t SignalBuffer[BUFFER_SIZE];
 // Handle signal output, including DAC hardware and input logic handling
 class SignalOutput
 {
-    friend class Readout;
-    SignalBuffer currentBuffer;
 private:
     /* data */
     Readout* const readout;
+    uint16_t tableSample;
+    std::unique_ptr<Waveform> waveform;
 public:
     SignalOutput(Readout* r);
     ~SignalOutput();
+    // advance tableSample as needed
+    uint16_t tick();
 };
 
 

@@ -1,28 +1,45 @@
 #ifndef WAVEFORM_H
 #define WAVEFORM_H
 #define TABLE_SAMPLES 1024
+#define SAMPLE_RATE_HZ 44100
 #include <Arduino.h>
+#include <string>
 
 typedef uint16_t Wavetable[1024];
 
+// Waveform base class
 struct Waveform
 {
     Waveform();
-    virtual ~Waveform();
-    float frequency;
+    uint16_t tick();
+    float frequencyHz = 1000.0f;
+protected:
     Wavetable table;
-    //this gets callen in the constructor
-    virtual void calculateTable()=0;
 };
+
+// Subclasses for each wave shape
 
 struct Sine : public Waveform
 {
-    void calculateTable() override;
+    Sine();
 };
 
 struct Triangle : public Waveform
 {
-    void calculateTable() override;
+    Triangle();
+};
+
+// All the above wave shapes
+enum WaveShape
+{
+    eSine,
+    eTriangle
+};
+
+//========================================
+struct CreateWaveform
+{
+    static Waveform* createWaveShape(WaveShape shape);
 };
 
 #endif // !WAVEFORM_H
