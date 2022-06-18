@@ -4,6 +4,7 @@
 #include "SignalOutput.h"
 #include <string>
 #include <Adafruit_MCP4725.h>
+#include <MCP_DAC.h>
 #include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
 #include "Credentials.h"
@@ -17,7 +18,7 @@ AsyncWebServer server(80);
 Readout readout;
 SignalOutput output(&readout);
 InputInterface inputs;
-Adafruit_MCP4725 dac;
+MCP4822 dac;
 
 //=================================
 void encTurned(uint8_t idx, bool dir)
@@ -45,7 +46,7 @@ void setDacValue(uint16_t val)
   if (lastValue != val)
   {
     lastValue = val;
-    dac.setVoltage(lastValue, false);
+    dac.analogWrite(val, 0);
   }
 }
 void initWifi()
@@ -78,8 +79,8 @@ void setup()
   Serial.begin(115200);
   readout.begin();
   inputs.setCallback(encTurned);
-  Wire1.begin(SDA1, SCL1, (uint32_t)800000);
-  dac.begin(0x60, &Wire1);
+  dac.selectVSPI();
+  dac.begin(5);
   initWifi();
   output.shiftWaveform(true);
   output.shiftWaveform(true);
