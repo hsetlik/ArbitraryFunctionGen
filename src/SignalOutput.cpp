@@ -60,5 +60,7 @@ void SignalOutput::shiftWaveform(bool dir)
             shape += NUM_WAVE_SHAPES; //also needs to change w/ number of waveforms
         currentWaveShape = (WaveShape)shape;
     }
+    auto freq = waveform->getFrequency();
     waveform.reset(CreateWaveform::createWaveShape(currentWaveShape));
+    waveform->setFrequency(freq);
 }

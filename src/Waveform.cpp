@@ -12,8 +12,13 @@ uint16_t Waveform::advance(unsigned long micros)
     static unsigned long microsIntoPeriod = 0;
     microsIntoPeriod = (microsIntoPeriod + micros) % periodMicros;
     float phase = (float)microsIntoPeriod / (float)periodMicros;
-    uint16_t idx = phase * TABLE_SAMPLES;
-    return table[idx];
+    float fIdx = phase * (float)TABLE_SAMPLES;
+    uint16_t lower = std::floor(fIdx);
+    uint16_t upper = std::ceil(fIdx);
+    auto t = fIdx - lower;
+    auto& upperSample = table[upper];
+    auto& lowerSample = table[lower];
+    return lowerSample + ((upperSample - lowerSample) * t);
 }
     
 void Waveform::setFrequency(float freq)
@@ -30,9 +35,9 @@ Sine::Sine()
     unsigned long min = LONG_MAX;
     for (uint16_t s = 0; s < TABLE_SAMPLES; ++s)
     {
-        float phase = (float) s / (float)TABLE_SAMPLES;
+        float phase = (float)s / (float)TABLE_SAMPLES;
         phase *= TWO_PI;
-        table[s] = WAVE_MAX * ((sin(phase) / 2.0f ) + 0.5f);
+        table[s] = WAVE_MAX * ((std::sin(phase) / 2.0f ) + 0.5f);
         if (table[s] > max)
             max = table[s];
         else if (table[s] < min)
