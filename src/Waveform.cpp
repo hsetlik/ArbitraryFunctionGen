@@ -32,7 +32,7 @@ Sine::Sine()
     {
         float phase = (float) s / (float)TABLE_SAMPLES;
         phase *= TWO_PI;
-        table[s] = 4095 * ((sin(phase) / 2.0f ) + 0.5f);
+        table[s] = WAVE_MAX * ((sin(phase) / 2.0f ) + 0.5f);
         if (table[s] > max)
             max = table[s];
         else if (table[s] < min)
@@ -44,14 +44,16 @@ Sine::Sine()
 //====================================================
 Triangle::Triangle()
 {
-    uint16_t level = 0;
-    uint16_t increment = 2 * (4095 / TABLE_SAMPLES);
-    for (uint16_t s = 0; s < TABLE_SAMPLES; s++)
+    const uint16_t delta = WAVE_MAX / (TABLE_SAMPLES / 2); 
+    for (uint32_t s = 0; s < TABLE_SAMPLES; s++)
     {
-        if (s < (4095 / 2))
-            level += increment;
-        else
-            level -= increment;
+        uint16_t idx = s;
+        if (s > TABLE_SAMPLES / 2)
+        {
+            auto distance = s - (TABLE_SAMPLES / 2);
+            idx = (TABLE_SAMPLES / 2) - distance;
+        }    
+        uint16_t level = idx * delta;
         table[s] = level;
     }
 }

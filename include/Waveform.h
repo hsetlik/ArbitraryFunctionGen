@@ -3,6 +3,7 @@
 #define TABLE_SAMPLES 1024
 #define SAMPLE_RATE_HZ 44100
 #define NUM_WAVE_SHAPES 2
+#define WAVE_MAX 4095
 #include <Arduino.h>
 #include <string>
 
