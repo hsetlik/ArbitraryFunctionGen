@@ -1,9 +1,9 @@
 #include "InputInterface.h"
 
 InputInterface::InputInterface(/* args */) :
-encoderA(ADATA, ACLK, RotaryEncoder::LatchMode::TWO03),
-encoderB(BDATA, BCLK, RotaryEncoder::LatchMode::TWO03),
-encoderC(CDATA, CCLK, RotaryEncoder::LatchMode::TWO03),
+encoderA(ADATA, ACLK, RotaryEncoder::LatchMode::FOUR3),
+encoderB(BDATA, BCLK, RotaryEncoder::LatchMode::FOUR3),
+encoderC(CDATA, CCLK, RotaryEncoder::LatchMode::FOUR3),
 encCallback(nullptr)
 {
 

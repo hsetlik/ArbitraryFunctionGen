@@ -2,38 +2,44 @@
 
 Waveform::Waveform()
 {
+    periodMicros = (unsigned long)1000000.0f / frequencyHz;
+    std::string lStr = "Period: " + std::to_string(periodMicros) + " microseconds";
+    Serial.println(lStr.c_str());
 }
 
-Waveform::~Waveform() {}
-
-
-uint16_t Waveform::tick()
+uint16_t Waveform::advance(unsigned long micros)
 {
-    static uint16_t tableSample = 0;
-    static uint32_t outputSample = 0;
-    static uint32_t lastAdvanceSample = 0;
-    outputSample = (outputSample + 1) % SAMPLE_RATE_HZ;
-    static bool needsAdvance = false;
-    if (outputSample > lastAdvanceSample)
-        needsAdvance = (outputSample - lastAdvanceSample) > (SAMPLE_RATE_HZ / frequencyHz);
-    else
-        needsAdvance = ((outputSample + SAMPLE_RATE_HZ) - lastAdvanceSample) > (SAMPLE_RATE_HZ / frequencyHz);
-    if (needsAdvance)
-    {
-        lastAdvanceSample = outputSample;
-        tableSample = (tableSample + 1) % TABLE_SAMPLES;
-    }
-    return table[tableSample];
+    static unsigned long microsIntoPeriod = 0;
+    microsIntoPeriod = (microsIntoPeriod + micros) % periodMicros;
+    float phase = (float)microsIntoPeriod / (float)periodMicros;
+    uint16_t idx = phase * TABLE_SAMPLES;
+    return table[idx];
+}
+    
+void Waveform::setFrequency(float freq)
+{
+    frequencyHz = freq;
+    periodMicros = (unsigned long)1000000.0f / frequencyHz;
+    std::string logStr = "Period length: " + std::to_string(periodMicros) + " microseconds";
+    Serial.println(logStr.c_str());
 }
 //====================================================
 Sine::Sine()
 {
+    unsigned long max = 0;
+    unsigned long min = LONG_MAX;
     for (uint16_t s = 0; s < TABLE_SAMPLES; ++s)
     {
         float phase = (float) s / (float)TABLE_SAMPLES;
         phase *= TWO_PI;
-        table[s] = 4095 * phase;
+        table[s] = 4095 * ((sin(phase) / 2.0f ) + 0.5f);
+        if (table[s] > max)
+            max = table[s];
+        else if (table[s] < min)
+            min = table[s];
     }
+    std::string logStr = "Sine minimum: " + std::to_string(min) + " Sine Maximum: " + std::to_string(max);
+    Serial.println(logStr.c_str());
 }
 //====================================================
 Triangle::Triangle()

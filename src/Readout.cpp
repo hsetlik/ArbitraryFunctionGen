@@ -24,7 +24,7 @@ void Readout::bootMessage()
 
 void Readout::begin()
 {
-    Wire.begin(SDA, SCL);
+    Wire.begin(SCL, SDA);
     if (!display.begin())
         Serial.println("Display not started!");
     bootMessage();
