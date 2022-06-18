@@ -2,7 +2,8 @@
 #define WAVEFORM_H
 #define TABLE_SAMPLES 1024
 #define SAMPLE_RATE_HZ 44100
-#define NUM_WAVE_SHAPES 2
+// NOTE: this has to change w/ the number of available shapes
+#define NUM_WAVE_SHAPES 4
 #define WAVE_MAX 4095
 #include <Arduino.h>
 #include <string>
@@ -34,11 +35,25 @@ struct Triangle : public Waveform
     Triangle();
 };
 
+struct Sawtooth : public Waveform
+{
+   Sawtooth();
+};
+
+struct Ramp : public Waveform
+{
+   Ramp();
+};
+
+
+
 // All the above wave shapes
 enum WaveShape
 {
     eSine,
-    eTriangle
+    eTriangle,
+    eSaw,
+    eRamp
 };
 
 //========================================

@@ -58,7 +58,26 @@ Triangle::Triangle()
     }
 }
 //====================================================
-
+Sawtooth::Sawtooth()
+{
+    for (uint16_t s = 0; s < TABLE_SAMPLES; ++s)
+    {
+        float phase = (float)s / (float)TABLE_SAMPLES;
+        uint16_t level = WAVE_MAX * (1.0f - phase);
+        table[s] = level;
+    }
+}
+//====================================================
+Ramp::Ramp()
+{
+    for (uint16_t s = 0; s < TABLE_SAMPLES; ++s)
+    {
+        float phase = (float)s / (float)TABLE_SAMPLES;
+        uint16_t level = WAVE_MAX * phase;
+        table[s] = level;
+    }
+}
+//====================================================
 Waveform* CreateWaveform::createWaveShape (WaveShape shape)
 {
     switch (shape)
@@ -67,6 +86,10 @@ Waveform* CreateWaveform::createWaveShape (WaveShape shape)
             return new Sine();
         case eTriangle:
             return new Triangle();
+        case eSaw:
+            return new Sawtooth();
+        case eRamp:
+            return new Ramp();
         default:
             return new Sine();
     }
